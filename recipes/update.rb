@@ -24,13 +24,9 @@ include_recipe 'wsus-client::configure'
 include_recipe 'powershell::powershell4'
 
 
-::Chef::Recipe.send(:include, ::Chef::Mixin::PowershellOut)
-
-# Chef does not have guard_interpreter feature before 11.12.0
-if powershell_out('(New-Object -com \'Microsoft.Update.Session\').CreateUpdateSearcher().Search(\'IsInstalled=0\').Updates.Count -ne 0').stdout.strip == 'True'
-  # Api documentation: http://msdn.microsoft.com/en-us/library/windows/desktop/aa387099.aspx
-  powershell_script 'wsus_update_script' do
-    code <<-EOH
+# Api documentation: http://msdn.microsoft.com/en-us/library/windows/desktop/aa387099.aspx
+powershell_script 'wsus_update_script' do
+  code <<-EOH
 $session = New-Object -com 'Microsoft.Update.Session'
 
 Write-Host 'Looking for updates...'
@@ -82,6 +78,14 @@ if ($installationResult.RebootRequired) {
   Write-Host 'Reboot required.' -F blue
 }
 Write-Host 'Installation succeeded' -F green
-    EOH
+  EOH
+  timeout node['wsus_client']['update_timeout']
+  only_if do
+    self.class.send(:include, ::Chef::Mixin::PowershellOut)
+
+    # Chef does not have guard_interpreter feature before 11.12.0
+    update_count = powershell_out('(New-Object -com \'Microsoft.Update.Session\').CreateUpdateSearcher().Search(\'IsInstalled=0\').Updates.Count').stdout.strip.to_i
+    Chef::Log.info "Windows Auto Update: #{update_count} update(s) to install."
+    update_count >= 0
   end
 end
