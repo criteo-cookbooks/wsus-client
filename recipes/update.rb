@@ -27,7 +27,7 @@ include_recipe 'powershell::powershell4'
 ::Chef::Recipe.send(:include, ::Chef::Mixin::PowershellOut)
 
 # Chef does not have guard_interpreter feature before 11.12.0
-if powershell_out('(New-Object -com \'Microsoft.Update.Session\').CreateUpdateSearcher().Search(\'IsInstalled=0\').Updates.Count -ne 0').stdout == 'True'
+if powershell_out('(New-Object -com \'Microsoft.Update.Session\').CreateUpdateSearcher().Search(\'IsInstalled=0\').Updates.Count -ne 0').stdout.strip == 'True'
   # Api documentation: http://msdn.microsoft.com/en-us/library/windows/desktop/aa387099.aspx
   powershell_script 'wsus_update_script' do
     code <<-EOH
