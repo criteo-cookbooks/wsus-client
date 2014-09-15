@@ -86,6 +86,6 @@ Write-Host 'Installation succeeded' -F green
     # Chef does not have guard_interpreter feature before 11.12.0
     update_count = powershell_out('(New-Object -com \'Microsoft.Update.Session\').CreateUpdateSearcher().Search(\'IsInstalled=0\').Updates.Count').stdout.strip.to_i
     Chef::Log.info "Windows Auto Update: #{update_count} update(s) to install."
-    update_count >= 0
+    update_count > 0
   end
 end
