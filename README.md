@@ -2,10 +2,18 @@ Wsus-client Cookbook
 =============
 Configures WSUS clients to retrieve approved updates.
 
+Testing
+-------
+The PowerShell script will always fail if run via the winrm vagrant provider
+as the IUpdateSession::CreateUpdateDownloader is not available remotely.
+
+Logs
+---------------
+The Microsoft.Update.Session object keeps a log in: C:\Windows\WindowsUpdate.log
 
 Requirements
 ------------
-This cookbook requires Chef 11.10.0+.
+This cookbook requires Chef 11.12.0+.
 
 ### Platforms
 * Windows XP
@@ -15,51 +23,6 @@ This cookbook requires Chef 11.10.0+.
 * Windows Server 2008 (R1, R2)
 * Windows 8 and 8.1
 * Windows Server 2012 (R1, R2)
-
-### Cookbooks
-The following cookbook is required as noted:
-
-* [powershell][powershell_cookbook]
-
-    `wsus-client::update` leverages the powershell_script resource and requires powershell 4
-
-Attributes
-----------
-TODO: List your cookbook attributes here.
-
-e.g.
-#### wsus-client::default
-<table>
-  <tr>
-    <th>Key</th>
-    <th>Type</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td><tt>['wsus_client']['bacon']</tt></td>
-    <td>Boolean</td>
-    <td>whether to include bacon</td>
-    <td><tt>true</tt></td>
-  </tr>
-</table>
-
-Usage
------
-#### wsus-client::default
-TODO: Write usage instructions for each cookbook.
-
-e.g.
-Just include `wsus-client` in your node's `run_list`:
-
-```json
-{
-  "name":"my_node",
-  "run_list": [
-    "recipe[wsus-client]"
-  ]
-}
-```
 
 Contributing
 ------------
@@ -92,4 +55,3 @@ limitations under the License.
 
 [author]:                   https://github.com/Annih
 [repository]:               https://github.com/criteo-cookbooks/wsus-client
-[powershell_cookbook]:      https://community.opscode.com/cookbooks/powershell

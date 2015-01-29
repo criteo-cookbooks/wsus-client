@@ -4,19 +4,4 @@ DEPENDENCIES
     metadata: true
 
 GRAPH
-  chef_handler (1.1.6)
-  ms_dotnet2 (1.0.0)
-    windows (>= 0.0.0)
-  ms_dotnet4 (1.0.2)
-    windows (>= 0.0.0)
-  ms_dotnet45 (1.1.2)
-    windows (>= 0.0.0)
-  powershell (3.0.7)
-    ms_dotnet2 (>= 0.0.0)
-    ms_dotnet4 (>= 0.0.0)
-    ms_dotnet45 (>= 0.0.0)
-    windows (>= 1.2.8)
-  windows (1.34.2)
-    chef_handler (>= 0.0.0)
-  wsus-client (0.1.0)
-    powershell (>= 0.0.0)
+  wsus-client (0.1.3)

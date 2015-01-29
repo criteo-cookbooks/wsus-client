@@ -21,71 +21,64 @@
 return unless platform?('windows')
 
 include_recipe 'wsus-client::configure'
-include_recipe 'powershell::powershell4'
 
-
-# Api documentation: http://msdn.microsoft.com/en-us/library/windows/desktop/aa387099.aspx
+# API documentation: http://msdn.microsoft.com/en-us/library/windows/desktop/aa387099.aspx
 powershell_script 'wsus_update_script' do
   code <<-EOH
-$session = New-Object -com 'Microsoft.Update.Session'
+    $session = New-Object -com 'Microsoft.Update.Session'
 
-Write-Host 'Looking for updates...'
-$searcher = $session.CreateUpdateSearcher()
-$foundUpdates = $searcher.Search('IsInstalled=0').Updates
+    Write-Host 'Looking for updates...'
+    $searcher = $session.CreateUpdateSearcher()
+    $foundUpdates = $searcher.Search('IsInstalled=0').Updates
 
-Write-Host 'Update(s) to download: ' $foundUpdates.Count
-if ($foundUpdates.Count -eq 0) {
-  Write-Warning 'No update available.'
-  exit 0
-}
+    Write-Host 'Update(s) to download: ' $foundUpdates.Count
+    if ($foundUpdates.Count -eq 0) {
+      Write-Warning 'No update available.'
+      exit 0
+    }
 
-$downloader = $session.CreateUpdateDownloader()
-$downloader.Updates = $foundUpdates
+    $downloader = $session.CreateUpdateDownloader()
+    $downloader.Updates = $foundUpdates
 
-Write-Host 'Downloading updates...'
-$downloadResult = $downloader.Download()
-# ResultCode values: http://msdn.microsoft.com/en-us/library/windows/desktop/aa387095.aspx
-if (($downloadResult.HResult -ne 0) -or (($downloadResult.ResultCode -ne 2) -and ($downloadResult.ResultCode -ne 3))) {
-  Write-Host 'Download failed.' -f red
-  exit 1
-}
+    Write-Host 'Downloading updates...'
+    $downloadResult = $downloader.Download()
+    # ResultCode values: http://msdn.microsoft.com/en-us/library/windows/desktop/aa387095.aspx
+    if (($downloadResult.HResult -ne 0) -or (($downloadResult.ResultCode -ne 2) -and ($downloadResult.ResultCode -ne 3))) {
+      Write-Host 'Download failed.' -f red
+      exit 1
+    }
 
-Write-Host 'Preparing updates...'
-$updatesToInstall = New-object -com 'Microsoft.Update.UpdateColl'
-foreach ($update in $foundUpdates) {
-  if (! $update.isdownloaded) {
-    Write-Warning "Update $($update.Title) not downloaded."
-    continue
-  }
-  if (! $update.EulaAccepted) {
-    Write-Host "Accepting EULA for $($update.Title)." -F green
-    $update.AcceptEula()
-  }
-  $updatesToInstall.Add($update) | out-null
-}
+    Write-Host 'Preparing updates...'
+    $updatesToInstall = New-object -com 'Microsoft.Update.UpdateColl'
+    foreach ($update in $foundUpdates) {
+      if (! $update.isdownloaded) {
+        Write-Warning "Update $($update.Title) not downloaded."
+        continue
+      }
+      if (! $update.EulaAccepted) {
+        Write-Host "Accepting EULA for $($update.Title)." -F green
+        $update.AcceptEula()
+      }
+      $updatesToInstall.Add($update) | out-null
+    }
 
-$installer = $session.CreateUpdateInstaller()
-$installer.ForceQuiet = $true
-$installer.Updates = $updatesToInstall
+    $installer = $session.CreateUpdateInstaller()
+    $installer.ForceQuiet = $true
+    $installer.Updates = $updatesToInstall
 
-$installationResult = $installer.Install()
-if (($installationResult.HResult -ne 0) -or ($installationResult.ResultCode -ne 2)) {
-  Write-Host "Installation failed. (Error code $($installationResult.HResult))" -f red
-  exit 1
-}
+    $installationResult = $installer.Install()
+    if (($installationResult.HResult -ne 0) -or ($installationResult.ResultCode -ne 2)) {
+      Write-Host "Installation failed. (Error code $($installationResult.HResult))" -f red
+      exit 1
+    }
 
-if ($installationResult.RebootRequired) {
-  Write-Host 'Reboot required.' -F blue
-}
-Write-Host 'Installation succeeded' -F green
+    if ($installationResult.RebootRequired) {
+      Write-Host 'Reboot required.' -F blue
+    }
+    Write-Host 'Installation succeeded' -F green
   EOH
-  timeout node['wsus_client']['update_timeout']
-  only_if do
-    self.class.send(:include, ::Chef::Mixin::PowershellOut)
-
-    # Chef does not have guard_interpreter feature before 11.12.0
-    update_count = powershell_out('(New-Object -com \'Microsoft.Update.Session\').CreateUpdateSearcher().Search(\'IsInstalled=0\').Updates.Count').stdout.strip.to_i
-    Chef::Log.info "Windows Auto Update: #{update_count} update(s) to install."
-    update_count > 0
-  end
+  timeout           node['wsus_client']['update_timeout']
+  guard_interpreter :powershell_script
+  # If a Powershell exception occurs in the guard (returns false), the script will run and make the chef run fail. This is on purpose.
+  not_if           '(New-Object -com "Microsoft.Update.Session").CreateUpdateSearcher().Search("IsInstalled=0").Updates.Count -eq 0'
 end
