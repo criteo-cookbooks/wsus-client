@@ -23,7 +23,7 @@ return unless platform?('windows')
 include_recipe 'wsus-client::configure'
 
 # API documentation: http://msdn.microsoft.com/en-us/library/windows/desktop/aa387099.aspx
-powershell_script 'wsus_update_script' do
+powershell_script 'wsus_update_script' do # ~FC009
   code <<-EOH
     $session = New-Object -com 'Microsoft.Update.Session'
 
