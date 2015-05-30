@@ -65,7 +65,7 @@ registry_key 'HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate' do
   # Allows signed non-Microsoft updates.
     { :type =>  :dword, :name =>   'AcceptTrustedPublisherCerts', :data =>  conf['enable_non_microsoft_updates'] ? 1 : 0 },
   # Disables access to Windows Update.
-    { :type =>  :dword, :name =>    'DisableWindowsUpdateAccess', :data =>  conf['disable_windows_update_acces'] ? 1 : 0 },
+    { :type =>  :dword, :name =>    'DisableWindowsUpdateAccess', :data => conf['disable_windows_update_access'] ? 1 : 0 },
   # Authorizes Users to approve or disapprove updates.
     { :type =>  :dword, :name =>              'ElevateNonAdmins', :data => conf['allow_user_to_install_updates'] ? 1 : 0 },
   # Defines the current computer update group.

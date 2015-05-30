@@ -28,7 +28,7 @@ default['wsus_client']['wsus_server']                              = nil
 default['wsus_client']['update_group']                             = nil
 
 # Disables access to Windows Update (or your WSUS server).
-default['wsus_client']['disable_windows_update_acces']             = false
+default['wsus_client']['disable_windows_update_access']            = false
 # Allows signed non-Microsoft updates.
 default['wsus_client']['enable_non_microsoft_updates']             = true
 # Authorizes Users to approve or disapprove updates.
