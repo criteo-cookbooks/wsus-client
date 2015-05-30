@@ -47,9 +47,9 @@ default['wsus_client']['no_reboot_with_logged_users']              = true
 default['wsus_client']['automatic_update_behavior']                = :disabled
 
 # Defines times in hours between detection cycles.
-# => 0          = disables custom detection frequency (use default value of 22 hours)
+# => 0          = disables custom detection frequency (use Microsoft default value of 22 hours)
 # => 1-22       = enables custom detection frequency with specified value
-default['wsus_client']['detection_frequency']                      = 0
+default['wsus_client']['detection_frequency']                      = 22
 
 # Defines the day of the week to schedule update install.
 # => :every_day = updates will be installed every day
