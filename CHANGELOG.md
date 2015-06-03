@@ -2,6 +2,10 @@ Wsus-client CHANGELOG
 ==============
 This file is used to list changes made in each version of the wsus-client cookbook.
 
+1.0.1 (2015-06-03)
+------------------
+- Fix README.md for chef supermarket
+
 1.0.0 (2015-06-03)
 ------------------
 - Workaround foodcritic false positive

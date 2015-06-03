@@ -28,6 +28,7 @@ Usage
 -----
 Using this cookbook is quite easy; add the desired recipes to the run list of a node, or role.
 Adjust any attributes as desired. For example, to configure a windows server role that connects to your WSUS server:
+
 ```ruby
 $ cat roles/updated_windows_server.rb
 name 'updated_windows_server'
@@ -78,6 +79,7 @@ reboot_warning               |Defines time in minutes of the restart warning cou
 reboot_prompt_timeout        |Defines time in minutes between prompts for a scheduled restart                                         |FixNum (1-1440)      |`10`
 
 `*` automatic_update_behavior values are:
+
 ```ruby
 # :disabled  = Disables automatic updates
 # :detect    = Only notify users of new updates
@@ -85,6 +87,7 @@ reboot_prompt_timeout        |Defines time in minutes between prompts for a sche
 # :install   = Download and install updates
 # :manual    = Lets the users configure the behavior
 ```
+
 `**` schedule_install_day possible values are: `:every_day`, `:sunday`, `:monday`, `:tuesday`, `:wednesday`, `:thursday`, `:friday`, `:saturday`
 
 ## wsus-client::update
