@@ -113,4 +113,11 @@ end
 service 'wuauserv' do
   supports status: true, start: true, stop: true, restart: true
   action [:start, :enable]
+  notifies :run, 'execute', :immediately
+end
+
+# Force detection in case the client-side update group changed
+execute 'Force Windows update detection cycle' do
+  command 'wuauclt.exe /ResetAuthorization /DetectNow'
+  action :nothing
 end
