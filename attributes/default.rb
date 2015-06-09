@@ -77,6 +77,5 @@ default['wsus_client']['reboot_warning']                           = 5
 # => 1-1440     = set prompts period to specified value
 default['wsus_client']['reboot_prompt_timeout']                    = 10
 
-# When using the 'update' recipe the powershell script runs synchronously
-# Increase the timeout if you have very long download/installs
-default['wsus_client']['update_timeout'] = 7200 # 2 hours
+# Define if the update recipe should install downloaded update or not
+default['wsus_client']['download_only'] = false

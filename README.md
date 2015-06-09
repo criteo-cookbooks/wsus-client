@@ -16,7 +16,7 @@ The Microsoft.Update.Session object keeps a log in: C:\Windows\WindowsUpdate.log
 
 Requirements
 ------------
-This cookbook requires Chef 11.12.0+ because it leverages the `guard_interpreter` feature for powershell scripts.
+This cookbook recommends Chef 11+.
 
 ### Platforms
 * Windows XP
@@ -45,8 +45,6 @@ default_attributes(
   wsus_client: {
     wsus_server: 'http://wsus-server.my-corporation.com:8530',
     update_group: 'updated_server2015',
-    # allow 3h timeout to synchronize updates
-    timeout: 10_800,
   },
 )
 ```
@@ -119,11 +117,9 @@ This recipe performs a synchronous detection and install of available Windows up
 ### Attributes
 The following attributes are used to configure the `wsus-client::update` recipe, accessible via `node['wsus_client'][attribute]`.
 
-Attribute      | Description                                                          | Type   | Default
----------------|----------------------------------------------------------------------|--------|--------
-update_timeout | The maximum amount of time the synchronous update is allowed to run. | FixNum | `7200`
-
-> **Note:** mixlib-shellout < 2.0.1 does not terminating the process after the allowed timeout. Chef 12.0.4 includes the new version.
+Attribute     | Description                                                              | Type                  | Default
+--------------|--------------------------------------------------------------------------|-----------------------|--------
+download_only | Determines whether available update should be installed once downloaded. | TrueClass, FalseClass | `false`
 
 Contributing
 ------------
