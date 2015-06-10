@@ -27,38 +27,20 @@ return unless platform?('windows')
 conf = node['wsus_client']
 
 # Converts days symbols to AUOptions value
-install_day = case conf['schedule_install_day']
-  when :every_day then 0
-  when :sunday    then 1
-  when :monday    then 2
-  when :tuesday   then 3
-  when :wednesday then 4
-  when :thursday  then 5
-  when :friday    then 6
-  when :saturday  then 7
-  else fail "Invalid value of '#{conf['schedule_install_day'] }' for attribute 'schedule_install_day'"
-end
+install_day = WsusClient::Helper.get_install_day conf['schedule_install_day']
 
 # Converts symbols behavior to AUOptions value
-au_options = case conf['automatic_update_behavior']
-  when :disabled  then 1
-  when :detect    then 2
-  when :download  then 3
-  when :install   then 4
-  when :manual    then 5
-  else fail "Invalid value of '#{conf['automatic_update_behavior'] }' for attribute 'automatic_update_behavior'"
-end
+au_options = WsusClient::Helper.get_behavior conf['automatic_update_behavior']
+
 # Disables auto_update on au_options :disabled
 no_auto_update = au_options == 1 ? 1 : 0
 
-# A helper to verify attributes values
-check_limit = lambda { |k, m| fail "Invalid value of '#{conf[k]}' for attribute '#{k}'" if conf[k] > m && conf[k] < 0 }
-
-check_limit['detection_frequency', 22]
-check_limit['schedule_install_time', 23]
-check_limit['schedule_retry_wait', 60]
-check_limit['reboot_warning', 30]
-check_limit['reboot_prompt_timeout', 1440]
+# Check other attributes values
+WsusClient::Helper.check_limit(conf, 'detection_frequency', 22)
+WsusClient::Helper.check_limit(conf, 'schedule_install_time', 23)
+WsusClient::Helper.check_limit(conf, 'schedule_retry_wait', 60)
+WsusClient::Helper.check_limit(conf, 'reboot_warning', 30)
+WsusClient::Helper.check_limit(conf, 'reboot_prompt_timeout', 1440)
 
 registry_key 'HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate' do
   values [
