@@ -20,5 +20,3 @@
 
 actions :download, :install
 default_action [:download, :install]
-
-attribute :on_reboot_required, kind_of: Proc

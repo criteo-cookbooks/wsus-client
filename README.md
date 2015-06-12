@@ -51,6 +51,26 @@ default_attributes(
 )
 ```
 
+Providers & Resources
+---------------------
+
+## update
+This provider allows to synchronously download and/or install available windows updates.
+
+### Actions
+Action   | Description
+---------|---------------------------
+download | Download available updates
+install  | Install downloaded updates
+
+> NOTE: The default behavior is `[:download, :install]`
+
+### Attributes
+Attribute     | Description                                         | Type         | Default
+--------------|-----------------------------------------------------|--------------|------------------------
+actions       | An array of actions to perform (see. actions above) | Symbol array | `[:download, :install]`
+name          | Name of the resource                                | String       |
+
 Recipes
 -------
 

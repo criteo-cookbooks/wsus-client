@@ -30,13 +30,13 @@ def load_current_resource
 end
 
 action :download do
-  update_to_download = updates.reject(&:IsDownloaded)
-  return if update_to_download.count == 0
+  updates_to_download = updates.reject(&:IsDownloaded)
+  return if updates_to_download.count == 0
 
-  converge_by "downloading #{update_to_download.count} update(s)" do
+  converge_by "downloading #{updates_to_download.count} update(s)" do
     # Transforms to a new update collection
     update_collection = WIN32OLE.new('Microsoft.Update.UpdateColl')
-    update_to_download.each { |update| update_collection.Add update }
+    updates_to_download.each { |update| update_collection.Add update }
     # Performs download
     downloader = session.CreateUpdateDownloader
     downloader.Updates = update_collection
@@ -65,12 +65,7 @@ action :install do
     installer.ForceQuiet = true
     installer.Updates = update_collection
     # Verifies operation result
-    result = installer.Install
-    assert_result('Installation', result)
-    # Performs additional operation if reboot required
-    if result.RebootRequired && new_resource.on_reboot_required
-      recipe_eval(&new_resource.on_reboot_required)
-    end
+    assert_result 'Installation', installer.Install
   end
 end
 

@@ -12,8 +12,7 @@ describe 'wsus_client_update' do
   let(:installer) { double('update_installer', ForceQuiet: true) }
   let(:searcher) { double('update_installer', ForceQuiet: true) }
   # Mock some OLE results
-  let(:success) { double('success', HResult: 0, ResultCode: 2, RebootRequired: false) }
-  let(:success_and_reboot) { double('success_and_reboot', HResult: 0, ResultCode: 2, RebootRequired: true) }
+  let(:success) { double('success', HResult: 0, ResultCode: 2) }
   let(:failure) { double('failure', HResult: 1, ResultCode: 42) }
 
   before do
@@ -84,15 +83,6 @@ describe 'wsus_client_update' do
       expect(collection.updates).to_not include downloadable_update
       expect(collection.updates).to include downloaded_update
       expect(collection.updates).to include downloaded_update_with_eula
-      expect(chef_run.wsus_client_update('WSUS updates').updated?).to be_truthy
-    end
-
-    it 'calls the provided on_reboot_required when a reboot is required' do
-      mock_search searcher, [downloaded_update]
-      mock_install installer, success_and_reboot
-
-      expect { chef_run }.to output('Reboot required!').to_stdout
-      expect { chef_run }.to_not raise_error
       expect(chef_run.wsus_client_update('WSUS updates').updated?).to be_truthy
     end
   end
