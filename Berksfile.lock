@@ -1,7 +1,0 @@
-DEPENDENCIES
-  wsus-client
-    path: .
-    metadata: true
-
-GRAPH
-  wsus-client (0.1.3)
