@@ -2,23 +2,28 @@ require 'spec_helper'
 
 describe 'wsus-client::update' do
   describe 'On windows platform' do
-    let(:chef_run) do
-      ChefSpec::SoloRunner.new(platform: 'windows', version: '2008R2').converge(described_recipe)
+    def chef_run(download_only = false)
+      ChefSpec::SoloRunner.new(platform: 'windows', version: '2008R2') do |node|
+        node.set['wsus_client']['download_only'] = download_only
+      end.converge(described_recipe)
     end
 
-    RESOURCE_NAME = 'wsus_update_script'
-    GUARD_CMD = '(New-Object -com "Microsoft.Update.Session").CreateUpdateSearcher().Search("IsInstalled=0").Updates.Count -eq 0'
+    RESOURCE_NAME = 'WSUS updates'
 
-    it 'does not run a complexe powershellscript when no update found' do
-      stub_command(GUARD_CMD).and_return(true)
-
-      expect(chef_run).to_not run_powershell_script(RESOURCE_NAME)
+    it 'includes configure recipe' do
+      expect(chef_run).to include_recipe('wsus-client::configure')
     end
 
-    it 'runs a complexe powershellscript when update(s) found' do
-      stub_command(GUARD_CMD).and_return(false)
+    it 'downloads only updates when wsus_client.download_only = true' do
+      run = chef_run(true)
+      expect(run).to download_wsus_client_update(RESOURCE_NAME)
+      expect(run).to_not install_wsus_client_update(RESOURCE_NAME)
+    end
 
-      expect(chef_run).to run_powershell_script(RESOURCE_NAME)
+    it 'downloads and installs updates when wsus_client.download_only = false' do
+      run = chef_run(false)
+      expect(run).to download_wsus_client_update(RESOURCE_NAME)
+      expect(run).to install_wsus_client_update(RESOURCE_NAME)
     end
   end
 
