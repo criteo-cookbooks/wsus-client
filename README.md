@@ -1,5 +1,8 @@
 Wsus-client Cookbook
-=============
+====================
+[![Cookbook Version][cookbook_version]][cookbook]
+[![Build Status][build_status]][build_status]
+
 Configures WSUS clients to retrieve approved updates.
 
 Testing
@@ -135,3 +138,6 @@ limitations under the License.
 [repository]:               https://github.com/criteo-cookbooks/wsus-client
 [client_targeting]:         https://technet.microsoft.com/library/cc720450
 [wsus_registry]:            https://technet.microsoft.com/library/dd939844
+[build_status]:             https://api.travis-ci.org/criteo-cookbooks/wsus-client.svg
+[cookbook_version]:         https://img.shields.io/cookbook/v/wsus-client.svg
+[cookbook]:                 https://supermarket.chef.io/cookbooks/wsus-client
