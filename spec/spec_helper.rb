@@ -12,3 +12,35 @@ RSpec.configure do |config|
   config.filter_run :focus
   config.order = 'random'
 end
+
+#====================================================
+# Helpers to mock wsus_client_update provider actions
+#====================================================
+
+# Mocks an OLE update collection object, and add a way to list updates
+def mock_ole_update_collection
+  double('update_collection', updates: []).tap do |obj|
+    allow(obj).to receive(:Add) { |update| obj.updates << update }
+    allow(::WIN32OLE).to receive(:new).with('Microsoft.Update.UpdateColl').and_return obj
+  end
+end
+# Mocks IUpdateSearcher Search methods and its result
+def mock_search(searcher, available_updates = [])
+  search_result = double('search_result', Updates: available_updates)
+  expect(searcher).to receive(:Search).and_return search_result
+end
+# Mocks IUpdateDownloader Download methods
+def mock_download(downloader, download_result)
+  expect(downloader).to receive(:Download).and_return download_result
+  mock_ole_update_collection.tap do |collection|
+    expect(downloader).to receive(:Updates=).with collection
+  end
+end
+# Mocks IUpdateInstaller Install methods
+def mock_install(installer, install_result)
+  expect(installer).to receive(:Install).and_return install_result
+  expect(installer).to receive(:ForceQuiet=).with true
+  mock_ole_update_collection.tap do |collection|
+    expect(installer).to receive(:Updates=).with collection
+  end
+end
