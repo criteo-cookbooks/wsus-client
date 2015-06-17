@@ -154,6 +154,6 @@ limitations under the License.
 [repository]:               https://github.com/criteo-cookbooks/wsus-client
 [client_targeting]:         https://technet.microsoft.com/library/cc720450
 [wsus_registry]:            https://technet.microsoft.com/library/dd939844
-[build_status]:             https://api.travis-ci.org/criteo-cookbooks/wsus-client.svg
+[build_status]:             https://api.travis-ci.org/criteo-cookbooks/wsus-client.svg?branch=master
 [cookbook_version]:         https://img.shields.io/cookbook/v/wsus-client.svg
 [cookbook]:                 https://supermarket.chef.io/cookbooks/wsus-client
