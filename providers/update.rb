@@ -31,41 +31,41 @@ end
 
 action :download do
   updates_to_download = updates.reject(&:IsDownloaded)
-  return if updates_to_download.count == 0
-
-  converge_by "downloading #{updates_to_download.count} update(s)" do
-    # Transforms to a new update collection
-    update_collection = WIN32OLE.new('Microsoft.Update.UpdateColl')
-    updates_to_download.each { |update| update_collection.Add update }
-    # Performs download
-    downloader = session.CreateUpdateDownloader
-    downloader.Updates = update_collection
-    # Verifies operation result
-    assert_result 'Download', downloader.Download
+  if updates_to_download.count != 0
+    converge_by "downloading #{updates_to_download.count} update(s)" do
+      # Transforms to a new update collection
+      update_collection = WIN32OLE.new('Microsoft.Update.UpdateColl')
+      updates_to_download.each { |update| update_collection.Add update }
+      # Performs download
+      downloader = session.CreateUpdateDownloader
+      downloader.Updates = update_collection
+      # Verifies operation result
+      assert_result 'Download', downloader.Download
+    end
   end
 end
 
 action :install do
   downloaded_updates = updates.select(&:IsDownloaded)
-  return if downloaded_updates.count == 0
-
-  converge_by "installing #{downloaded_updates.count} update(s)" do
-    # Transforms to a new update collection
-    update_collection = WIN32OLE.new('Microsoft.Update.UpdateColl')
-    downloaded_updates.each do |update|
-      unless update.EulaAccepted
-        converge_by "accepting EULA for #{update.Title}" do
-          update.AcceptEula
+  if downloaded_updates.count != 0
+    converge_by "installing #{downloaded_updates.count} update(s)" do
+      # Transforms to a new update collection
+      update_collection = WIN32OLE.new('Microsoft.Update.UpdateColl')
+      downloaded_updates.each do |update|
+        unless update.EulaAccepted
+          converge_by "accepting EULA for #{update.Title}" do
+            update.AcceptEula
+          end
         end
+        update_collection.Add update
       end
-      update_collection.Add update
+      # Performs install
+      installer = session.CreateUpdateInstaller
+      installer.ForceQuiet = true
+      installer.Updates = update_collection
+      # Verifies operation result
+      assert_result 'Installation', installer.Install
     end
-    # Performs install
-    installer = session.CreateUpdateInstaller
-    installer.ForceQuiet = true
-    installer.Updates = update_collection
-    # Verifies operation result
-    assert_result 'Installation', installer.Install
   end
 end
 
