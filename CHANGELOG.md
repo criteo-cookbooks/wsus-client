@@ -2,6 +2,13 @@ Wsus-client CHANGELOG
 ==============
 This file is used to list changes made in each version of the wsus-client cookbook.
 
+1.1.0 (2015-06-18)
+------------------
+- Expose new wsus_client_update LWRP to synchronously download or install updates
+- [PR 9](https://github.com/criteo-cookbooks/wsus-client/pull/9) - Fix the client-side detection
+- [PR 11](https://github.com/criteo-cookbooks/wsus-client/pull/11) - Allow string values for automatic_update_behavior and schedule_install_day
+- Add chefspec and rspec tests!
+
 1.0.1 (2015-06-03)
 ------------------
 - Fix README.md for chef supermarket
