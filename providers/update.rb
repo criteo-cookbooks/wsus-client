@@ -81,7 +81,7 @@ def assert_result(action, result)
 end
 
 def updates
-  @updates ||= [].tap do |updates|
+  node.run_state['wsus_client_updates'] ||= [].tap do |updates|
     # Searches non installed updates
     search_result = session.CreateUpdateSearcher.Search 'IsInstalled=0'
     # Transforms to ruby array for future use
