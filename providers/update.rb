@@ -32,6 +32,7 @@ end
 action :download do
   updates_to_download = updates.reject(&:IsDownloaded)
   if updates_to_download.count != 0
+    Chef::Log.info "Windows Auto Update: #{updates_to_download.count} update(s) to download."
     converge_by "downloading #{updates_to_download.count} update(s)" do
       # Transforms to a new update collection
       update_collection = WIN32OLE.new('Microsoft.Update.UpdateColl')
@@ -48,6 +49,7 @@ end
 action :install do
   downloaded_updates = updates.select(&:IsDownloaded)
   if downloaded_updates.count != 0
+    Chef::Log.info "Windows Auto Update: #{downloaded_updates.count} update(s) to install."
     converge_by "installing #{downloaded_updates.count} update(s)" do
       # Transforms to a new update collection
       update_collection = WIN32OLE.new('Microsoft.Update.UpdateColl')
