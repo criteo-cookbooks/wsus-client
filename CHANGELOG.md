@@ -2,6 +2,11 @@ Wsus-client CHANGELOG
 ==============
 This file is used to list changes made in each version of the wsus-client cookbook.
 
+1.2.0 (2015-08-07)
+------------------
+- [PR 17](https://github.com/criteo-cookbooks/wsus-client/pull/14) - Speed up LWRP by searching updates only once
+- [PR 15](https://github.com/criteo-cookbooks/wsus-client/pull/15) - Log more information before downloading and installing updates
+
 1.1.0 (2015-06-18)
 ------------------
 - Expose new wsus_client_update LWRP to synchronously download or install updates
