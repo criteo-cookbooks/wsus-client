@@ -103,4 +103,5 @@ powershell_script 'Force Windows update detection cycle' do
   code <<-EOH
     wuauclt.exe /ResetAuthorization /DetectNow
     EOH
+  action :nothing
 end
