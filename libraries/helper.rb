@@ -9,7 +9,7 @@ module WsusClient
       wednesday
       thursday
       friday
-      staturday
+      saturday
     ) unless defined? WsusClient::Helper::INSTALL_DAYS
 
     def self.get_install_day(node_value)

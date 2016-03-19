@@ -5,7 +5,7 @@ describe WsusClient::Helper, unit: true do
   describe :get_install_day do
     INSTALL_DAYS = {
       every_day: 0, sunday: 1, monday: 2, tuesday: 3,
-      wednesday: 4, thursday: 5, friday: 6, staturday: 7
+      wednesday: 4, thursday: 5, friday: 6, saturday: 7
     }
 
     it 'works with valid string' do
