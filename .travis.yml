@@ -6,10 +6,19 @@ deploy:
   provider: chef-supermarket
   user_id: criteo
   cookbook_category: Package Management
-  client_key: .travis/client.pem
+  client_key: ".travis/client.pem"
   on:
     tags: true
     all_branches: true
 before_deploy:
 - openssl aes-256-cbc -K $encrypted_31f7c76bb631_key -iv $encrypted_31f7c76bb631_iv
   -in .travis/client.pem.enc -out .travis/client.pem -d
+before_install:
+- openssl aes-256-cbc -K $encrypted_4c5833115382_key -iv $encrypted_4c5833115382_iv
+  -in .travis/travis-ci.pem.enc -out ~/.ssh/id_rsa -d
+env:
+  global:
+  - secure: twNhUNfgZtSKm6zQDDr4jYH1P3EPu1doIAkZj2aAHg9lYIHE5wqZW5HPt/9bu6+bYNYMDZna8+MeNC1+kvqSBYNXJFxXIyqriXwOuPwwzI9kMB6bBVSqwyFkcJ3xneJ1Rz3WrkQ2QzIYVn+IhfwjXpQf6h97yEu1Nhjr23NP3t0=
+  - secure: zqO8JL+SrEMOF82R711aA61a2FrwEq1mN2vF8HRq3cGhfwZmrYHaAB7gZ9zEpeNj0d7adyqmEMSRcKwlMBGtwNus2WyysWaosoamkpPUttsnTYnksgChAc1WJqOf1uUGwHB5adhq97sp9dVlSvm7ZfaS8MUh/8ktNQ+t7kL31i8=
+  - secure: kyDWTUsFfd9xy8G3NkMxSI0HAllV+v4yGk/FB44rLAyRnB0zHK9M3j76a0ZclRFAfJ/x8r5ULIOYWUTVU0qV6XirZFSVfyKgHlO6u4Z4J6mM1p4BSvg0pR+0GfGyZ4F9uC3Ei0BJtUpG0dZqJmvieavvBPnulsbojFHH7vHEStQ=
+  - secure: BzsjqxoOlhBwsrEGsh4Rpa+PG73fGMDp5aXCyBDwultAoyBLBf/aUmDmv63Ubr20odljv67uxDyyh5wlOqPJugXrdByqN6TR9uZuJUZQjvsbHqUt3ky2cHoilTzzqD0R6pDl+mCEkOkrKiGvvqmyNpXbj+sIpmQN9jzx3Xl8YqM=
