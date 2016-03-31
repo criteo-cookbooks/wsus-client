@@ -34,7 +34,7 @@ describe 'wsus-client::configure' do
       expect(chef_run).to enable_service(WUAUSERV_SERVICE_NAME)
 
       resource = chef_run.service WUAUSERV_SERVICE_NAME
-      notify_name = "execute[#{DETECTION_EXECUTE_NAME}]"
+      notify_name = "powershell_script[#{DETECTION_EXECUTE_NAME}]"
       expect(resource).to notify(notify_name).to(:run).immediately
     end
   end
