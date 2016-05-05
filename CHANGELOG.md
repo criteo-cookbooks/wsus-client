@@ -2,6 +2,11 @@ Wsus-client CHANGELOG
 ==============
 This file is used to list changes made in each version of the wsus-client cookbook.
 
+1.2.1 (2016-05-05)
+------------------
+- Configure travis to test using ruby 2.1.0
+- [PR 21](https://github.com/criteo-cookbooks/wsus-client/pull/21) - Support chef-client running on ruby 64bits (chef >= 12.8.1)
+
 1.2.0 (2015-08-07)
 ------------------
 - [PR 17](https://github.com/criteo-cookbooks/wsus-client/pull/14) - Speed up LWRP by searching updates only once
