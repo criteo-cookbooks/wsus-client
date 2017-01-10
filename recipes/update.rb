@@ -22,7 +22,7 @@ return unless platform?('windows')
 
 include_recipe 'wsus-client::configure'
 
-if node['wsus_client']['download_only']
+if node['wsus-client']['download_only']
   actions_to_perform = [:download]
 else
   actions_to_perform = [:download, :install]
