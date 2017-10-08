@@ -19,46 +19,52 @@
 #
 
 default_action %i[download install]
+property :download_timeout, Integer, default: 3600
+property :install_timeout, Integer, default: 3600
+property :handle_reboot, [TrueClass, FalseClass], default: false
+property :reboot_delay, Integer, default: 1
 
 action :download do
   updates_to_download = updates.reject(&:IsDownloaded)
-  if updates_to_download.count != 0
-    Chef::Log.info "Windows Auto Update: #{updates_to_download.count} update(s) to download."
-    converge_by "downloading #{updates_to_download.count} update(s)" do
-      # Transforms to a new update collection
-      update_collection = ::WIN32OLE.new('Microsoft.Update.UpdateColl')
-      updates_to_download.each { |update| update_collection.Add update }
-      # Performs download
-      downloader = session.CreateUpdateDownloader
-      downloader.Updates = update_collection
-      # Verifies operation result
-      assert_result 'Download', downloader.Download
+
+  ::Chef::Log.info "Windows Auto Update: #{updates_to_download.size} update(s) to download."
+  next if updates_to_download.empty?
+  converge_by "downloading #{updates_to_download.count} update(s)" do
+    # Performs download
+    result = ::WsusClient::DownloadJob.new(session).run(updates_to_download, new_resource.download_timeout) do |update, progress|
+      ::Chef::Log.info "Update '#{update.Title}' downloaded (#{progress}% done)"
     end
+    # Verifies operation result
+    verify! result
   end
 end
 
 action :install do
   downloaded_updates = updates.select(&:IsDownloaded)
-  if downloaded_updates.count != 0
-    Chef::Log.info "Windows Auto Update: #{downloaded_updates.count} update(s) to install."
-    converge_by "installing #{downloaded_updates.count} update(s)" do
-      # Transforms to a new update collection
-      update_collection = ::WIN32OLE.new('Microsoft.Update.UpdateColl')
-      downloaded_updates.each do |update|
-        unless update.EulaAccepted
-          converge_by "accepting EULA for #{update.Title}" do
-            update.AcceptEula
-          end
-        end
-        update_collection.Add update
-      end
-      # Performs install
-      installer = session.CreateUpdateInstaller
-      installer.ForceQuiet = true
-      installer.Updates = update_collection
-      # Verifies operation result
-      assert_result 'Installation', installer.Install
+
+  ::Chef::Log.info "Windows Auto Update: #{downloaded_updates.size} update(s) to install."
+  next if downloaded_updates.empty?
+  converge_by "installing #{downloaded_updates.count} update(s)" do
+    # Accepts EULA when required
+    downloaded_updates.reject(&:EulaAccepted).each do |update|
+      converge_by("accepting EULA for #{update.Title}") { update.AcceptEula }
     end
+
+    # Performs install
+    result = ::WsusClient::InstallJob.new(session).run(downloaded_updates, new_resource.install_timeout) do |update, progress|
+      ::Chef::Log.info "Update '#{update.Title}' installed (#{progress}% done)"
+    end
+
+    # Reboot if allowed and needed
+    reboot 'Reboot for Windows updates' do
+      action :reboot_now
+      delay_mins new_resource.reboot_delay
+      reason 'Reboot by chef for Windows updates'
+      only_if { new_resource.handle_reboot && result.RebootRequired }
+    end
+
+    # Verifies operation result
+    verify! result
   end
 end
 
@@ -67,11 +73,9 @@ action_class do
     true
   end
 
-  # ResultCode values: http://msdn.microsoft.com/aa387095
-  SUCCESS_CODE = 2
-  def assert_result(action, result)
-    return unless result.HResult != 0 || result.ResultCode != SUCCESS_CODE
-    raise "#{action} failed. (Error code #{result.HResult})"
+  def verify!(result)
+    return if result.HResult.zero? && result.ResultCode == ::WsusClient::Job::ResultCode::SUCCEEDED
+    raise "Operation failed. (Error code #{result.HResult} - Result code #{result.ResultCode})"
   end
 
   def updates
