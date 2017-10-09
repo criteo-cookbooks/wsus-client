@@ -16,7 +16,7 @@ The Microsoft.Update.Session object keeps a log in: C:\Windows\WindowsUpdate.log
 
 Requirements
 ------------
-This cookbook recommends Chef 11+.
+This cookbook recommends Chef 12.6+.
 
 ### Platforms
 * Windows XP
@@ -26,6 +26,8 @@ This cookbook recommends Chef 11+.
 * Windows Server 2008 (R1, R2)
 * Windows 8 and 8.1
 * Windows Server 2012 (R1, R2)
+* Windows 10
+* Windows Server 2016
 
 Usage
 -----
@@ -64,10 +66,14 @@ install  | Install downloaded updates
 > NOTE: The default behavior is `[:download, :install]`
 
 ### Attributes
-Attribute     | Description                                         | Type         | Default
---------------|-----------------------------------------------------|--------------|------------------------
-actions       | An array of actions to perform (see. actions above) | Symbol array | `[:download, :install]`
-name          | Name of the resource                                | String       |
+Attribute        | Description                                            | Type                  | Default
+-----------------|--------------------------------------------------------|-----------------------|------------------------
+actions          | An array of actions to perform (see. actions above)    | Symbol array          | `[:download, :install]`
+name             | Name of the resource                                   | String                |
+download_timeout | Time alloted to the download operation before failing  | Integer               | `3600`
+install_timeout  | Time alloted to the install operation before failing   | Integer               | `3600`
+handle_reboot    | Indicate whether to reboot or not after update install | TrueClass, FalseClass | `false`
+reboot_delay     | The amount of time (in minutes) to delay the reboot    | Integer               | `1`
 
 Recipes
 -------
