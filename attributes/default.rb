@@ -77,5 +77,14 @@ default['wsus_client']['reboot_warning']                           = 5
 # => 1-1440     = set prompts period to specified value
 default['wsus_client']['reboot_prompt_timeout']                    = 10
 
-# Define if the update recipe should install downloaded update or not
-default['wsus_client']['download_only'] = false
+# Define action performed by the update recipe
+# This can be a combination of: nothing, download & install
+default['wsus_client']['update']['action']                        = %i[download install]
+# Time in seconds alloted to the download operation before failing.
+default['wsus_client']['update']['download_timeout']               = 3600
+# Time in seconds alloted to the install operation before failing.
+default['wsus_client']['update']['install_timeout']                = 3600
+# Indicate whether to reboot or not after update install.
+default['wsus_client']['update']['handle_reboot']                  = false
+# The amount of time (in minutes) to delay the reboot.
+default['wsus_client']['update']['reboot_delay']                   = 1

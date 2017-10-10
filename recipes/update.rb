@@ -22,12 +22,6 @@ return unless platform?('windows')
 
 include_recipe 'wsus-client::configure'
 
-if node['wsus_client']['download_only']
-  actions_to_perform = [:download]
-else
-  actions_to_perform = [:download, :install]
-end
-
 wsus_client_update 'WSUS updates' do
-  action             actions_to_perform
+  node['wsus_client']['update'].each { |property, value| send(property, value) }
 end
