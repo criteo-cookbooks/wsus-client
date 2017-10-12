@@ -121,11 +121,15 @@ reboot_prompt_timeout        |Defines time in minutes between prompts for a sche
 This recipe performs a synchronous detection and install of available Windows updates.
 
 ### Attributes
-The following attributes are used to configure the `wsus-client::update` recipe, accessible via `node['wsus_client'][attribute]`.
+The following attributes are used to configure the `wsus-client::update` recipe, accessible via `node['wsus_client']['update'][attribute]`.
 
-Attribute     | Description                                                              | Type                  | Default
---------------|--------------------------------------------------------------------------|-----------------------|--------
-download_only | Determines whether available update should be installed once downloaded. | TrueClass, FalseClass | `false`
+Attribute        | Description                                             | Type                  | Default
+-----------------|---------------------------------------------------------|-----------------------|--------
+action           | Define actions performed by the update recipe.          | Array of symbols      | `[:download, :install]`
+download_timeout | Time alloted to the download operation before failing.  | Integer               | `3600`
+install_timeout  | Time alloted to the install operation before failing.   | Integer               | `3600`
+handle_reboot    | Indicate whether to reboot or not after update install. | TrueClass, FalseClass | `false`
+reboot_delay     | The amount of time (in minutes) to delay the reboot.    | Integer               | `1`
 
 Contributing
 ------------
