@@ -1,21 +1,21 @@
-Wsus-client Cookbook
-====================
-[![Cookbook Version][cookbook_version]][cookbook]
+# Wsus-client Cookbook
+[![Cookbook Version][cookbook_version]][supermarket_url]
 [![Build Status][build_status]][build_status]
+[![License][license]][license]
 
 Configures WSUS clients to retrieve approved updates.
 
-Testing
--------
+## Testing
+
 The PowerShell script will always fail if run via the winrm vagrant provider
 as the IUpdateSession::CreateUpdateDownloader is not available remotely.
 
-Logs
----------------
+## Logs
+
 The Microsoft.Update.Session object keeps a log in: C:\Windows\WindowsUpdate.log
 
-Requirements
-------------
+## Requirements
+
 This cookbook recommends Chef 12.6+.
 
 ### Platforms
@@ -29,8 +29,8 @@ This cookbook recommends Chef 12.6+.
 * Windows 10
 * Windows Server 2016
 
-Usage
------
+## Usage
+
 Using this cookbook is quite easy; add the desired recipes to the run list of a node, or role.
 Adjust any attributes as desired. For example, to configure a windows server role that connects to your WSUS server:
 
@@ -51,13 +51,12 @@ default_attributes(
 )
 ```
 
-Providers & Resources
----------------------
+## Providers & Resources
 
-## update
+### update
 This provider allows to synchronously download and/or install available windows updates.
 
-### Actions
+#### Actions
 Action   | Description
 ---------|---------------------------
 download | Download available updates
@@ -65,7 +64,7 @@ install  | Install downloaded updates
 
 > NOTE: The default behavior is `[:download, :install]`
 
-### Attributes
+#### Attributes
 Attribute        | Description                                            | Type                  | Default
 -----------------|--------------------------------------------------------|-----------------------|------------------------
 actions          | An array of actions to perform (see. actions above)    | Symbol array          | `[:download, :install]`
@@ -75,17 +74,16 @@ install_timeout  | Time alloted to the install operation before failing   | Inte
 handle_reboot    | Indicate whether to reboot or not after update install | TrueClass, FalseClass | `false`
 reboot_delay     | The amount of time (in minutes) to delay the reboot    | Integer               | `1`
 
-Recipes
--------
+## Recipes
 
-## wsus-client::default
+### wsus-client::default
 Convenience recipe that configures WSUS client and performs a synchronous update.
 It basically includes `wsus-client::configure` and `wsus-client::update`
 
-## wsus-client::configure
+### wsus-client::configure
 This recipe modifies the Windows registry to configure [WSUS update settings][wsus_registry].
 
-### Attributes
+#### Attributes
 The following attributes are used to configure the `wsus-client::configure` recipe, accessible via `node['wsus_client'][attribute]`.
 
 Attribute                    | Description                                                                                            | Type                | Default
@@ -117,10 +115,12 @@ reboot_prompt_timeout        |Defines time in minutes between prompts for a sche
 
 `**` schedule_install_day possible values are: `:every_day`, `:sunday`, `:monday`, `:tuesday`, `:wednesday`, `:thursday`, `:friday`, `:saturday`
 
-## wsus-client::update
+### wsus-client::update
+
 This recipe performs a synchronous detection and install of available Windows updates.
 
-### Attributes
+#### Attributes
+
 The following attributes are used to configure the `wsus-client::update` recipe, accessible via `node['wsus_client']['update'][attribute]`.
 
 Attribute        | Description                                             | Type                  | Default
@@ -131,8 +131,8 @@ install_timeout  | Time alloted to the install operation before failing.   | Int
 handle_reboot    | Indicate whether to reboot or not after update install. | TrueClass, FalseClass | `false`
 reboot_delay     | The amount of time (in minutes) to delay the reboot.    | Integer               | `1`
 
-Contributing
-------------
+# Contributing
+
 1. Fork the [repository on Github][repository]
 2. Create a named feature branch (like `add_component_x`)
 3. Write your change
@@ -140,8 +140,8 @@ Contributing
 5. Run the tests, ensuring they all pass
 6. Submit a Pull Request using Github
 
-License and Authors
--------------------
+# License and Authors
+
 Authors: [Baptiste Courtois][author] (<b.courtois@criteo.com>)
 
 ```text
@@ -162,8 +162,9 @@ limitations under the License.
 
 [author]:                   https://github.com/Annih
 [repository]:               https://github.com/criteo-cookbooks/wsus-client
+[license]:                  https://img.shields.io/github/license/criteo-cookbooks/wsus-client.svg
 [client_targeting]:         https://technet.microsoft.com/library/cc720450
 [wsus_registry]:            https://technet.microsoft.com/library/dd939844
 [build_status]:             https://api.travis-ci.org/criteo-cookbooks/wsus-client.svg?branch=master
 [cookbook_version]:         https://img.shields.io/cookbook/v/wsus-client.svg
-[cookbook]:                 https://supermarket.chef.io/cookbooks/wsus-client
+[supermarket_url]:          https://supermarket.chef.io/cookbooks/wsus-client
