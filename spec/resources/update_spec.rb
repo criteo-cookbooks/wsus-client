@@ -17,13 +17,15 @@ describe 'wsus_client_update' do
 
   before do
     # Mocks WIN32OLE object creation
+    stub_const('::WIN32OLE', ::Class.new) unless defined? ::WIN32OLE
     allow(::WIN32OLE).to receive(:new).and_call_original
     allow(::WIN32OLE).to receive(:new).with('Microsoft.Update.Session').and_return session
   end
 
   describe 'action download' do
     let(:chef_run) do
-      ChefSpec::SoloRunner.new(step_into: ['wsus_client_update']).converge('wsus-client-test::download_update')
+      ChefSpec::SoloRunner.new(platform: 'windows', version: '2016', step_into: ['wsus_client_update'])
+                          .converge('wsus-client-test::download_update')
     end
 
     it 'does nothing if no available update' do
@@ -35,15 +37,15 @@ describe 'wsus_client_update' do
 
     it 'fails when an error occured with the downloader' do
       mock_search searcher, [downloadable_update]
-      mock_download downloader, failure
+      mock_job downloader, :download, failure
 
-      msg = /Download failed. \(Error code #{failure.HResult}\)/
+      msg = /Operation failed. \(Error code #{failure.HResult} - Result code #{failure.ResultCode}\)/
       expect { chef_run }.to raise_error(msg)
     end
 
     it 'downloads only non-downloaded updates' do
       mock_search searcher, [downloadable_update, downloaded_update, downloaded_update_with_eula]
-      collection = mock_download downloader, success
+      collection = mock_job downloader, :download, success
 
       expect { chef_run }.to_not raise_error
       expect(collection.updates.count).to be 1
@@ -56,7 +58,8 @@ describe 'wsus_client_update' do
 
   describe 'action install' do
     let(:chef_run) do
-      ChefSpec::SoloRunner.new(step_into: ['wsus_client_update']).converge('wsus-client-test::install_update')
+      ChefSpec::SoloRunner.new(platform: 'windows', version: '2016', step_into: ['wsus_client_update'])
+                          .converge('wsus-client-test::install_update')
     end
 
     it 'does nothing if no available update' do
@@ -68,15 +71,15 @@ describe 'wsus_client_update' do
 
     it 'fails when an error occured with the installer' do
       mock_search searcher, [downloaded_update]
-      mock_install installer, failure
+      mock_job installer, :install, failure
 
-      msg = /Installation failed. \(Error code #{failure.HResult}\)/
+      msg = /Operation failed. \(Error code #{failure.HResult} - Result code #{failure.ResultCode}\)/
       expect { chef_run }.to raise_error(msg)
     end
 
     it 'installs only downloaded updates' do
       mock_search searcher, [downloadable_update, downloaded_update, downloaded_update_with_eula]
-      collection = mock_install installer, success
+      collection = mock_job installer, :install, success
 
       expect { chef_run }.to_not raise_error
       expect(collection.updates.count).to be 2

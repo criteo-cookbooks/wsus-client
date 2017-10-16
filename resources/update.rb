@@ -88,7 +88,7 @@ action_class do
   end
 
   def session
-    require 'win32ole'
+    require 'win32ole' if RUBY_PLATFORM =~ /mswin|mingw32|windows/
     # API documentation: http://msdn.microsoft.com/aa387099
     @session ||= ::WIN32OLE.new('Microsoft.Update.Session')
   end

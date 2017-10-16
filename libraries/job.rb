@@ -24,7 +24,7 @@ module WsusClient
     end
 
     def run(updates, timeout = 3600, &block)
-      require 'win32ole'
+      require 'win32ole' if RUBY_PLATFORM =~ /mswin|mingw32|windows/
       require 'timeout'
 
       # Prepare update collection and status

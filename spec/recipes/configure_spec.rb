@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'wsus-client::configure' do
   describe 'On windows platform' do
     let(:chef_run) do
-      ChefSpec::SoloRunner.new(platform: 'windows', version: '2008R2').converge(described_recipe)
+      ChefSpec::SoloRunner.new(platform: 'windows', version: '2016').converge(described_recipe)
     end
 
     WINDOWS_UPDATE_KEY = 'HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate'
@@ -29,19 +29,22 @@ describe 'wsus-client::configure' do
       expect(resource).to notify(notify_name).to(:restart).immediately
     end
 
-    it 'starts and enable wuauserv service and force update cycle detection' do
-      expect(chef_run).to start_service(WUAUSERV_SERVICE_NAME)
-      expect(chef_run).to enable_service(WUAUSERV_SERVICE_NAME)
+    it 'notifies the update detection script' do
+      [WINDOWS_UPDATE_KEY, WINDOWS_AUTO_UPDATE_KEY].each do |name|
+        resource = chef_run.registry_key name
+        notify_name = "powershell_script[#{DETECTION_EXECUTE_NAME}]"
+        expect(resource).to notify(notify_name).to(:run).immediately
+      end
+    end
 
-      resource = chef_run.service WUAUSERV_SERVICE_NAME
-      notify_name = "powershell_script[#{DETECTION_EXECUTE_NAME}]"
-      expect(resource).to notify(notify_name).to(:run).immediately
+    it 'enable wuauserv service' do
+      expect(chef_run).to enable_service(WUAUSERV_SERVICE_NAME)
     end
   end
 
   describe 'On non-windows platform' do
     let(:chef_run) do
-      ChefSpec::SoloRunner.new.converge(described_recipe)
+      ChefSpec::SoloRunner.new(platform: 'centos', version: '7.4.1708').converge(described_recipe)
     end
 
     it 'does nothing' do

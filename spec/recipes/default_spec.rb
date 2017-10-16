@@ -14,7 +14,7 @@ describe 'wsus-client::default' do
 
   describe 'On non-windows platform' do
     let(:chef_run) do
-      ChefSpec::SoloRunner.new.converge(described_recipe)
+      ChefSpec::SoloRunner.new(platform: 'centos', version: '7.4.1708').converge(described_recipe)
     end
 
     it 'does nothing' do

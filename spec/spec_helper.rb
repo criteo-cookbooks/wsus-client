@@ -29,18 +29,17 @@ def mock_search(searcher, available_updates = [])
   search_result = double('search_result', Updates: available_updates)
   expect(searcher).to receive(:Search).and_return search_result
 end
-# Mocks IUpdateDownloader Download methods
-def mock_download(downloader, download_result)
-  expect(downloader).to receive(:Download).and_return download_result
+# Mocks WU worker methods
+def mock_job(worker, action, download_result)
+  update_result = double('update_result', ResultCode: 0)
+  job_progress = double('job_progress', PercentComplete: 0, GetUpdateResult: update_result)
+  job = double('asynchronous_job', GetProgress: job_progress, IsCompleted: true, CleanUp: nil)
+
+  expect(worker).to receive("Begin#{action.capitalize}").and_return job
+  expect(worker).to receive("End#{action.capitalize}").and_return download_result
+  expect(worker).to receive(:ForceQuiet=).with(true) if action == :install
   mock_ole_update_collection.tap do |collection|
-    expect(downloader).to receive(:Updates=).with collection
-  end
-end
-# Mocks IUpdateInstaller Install methods
-def mock_install(installer, install_result)
-  expect(installer).to receive(:Install).and_return install_result
-  expect(installer).to receive(:ForceQuiet=).with true
-  mock_ole_update_collection.tap do |collection|
-    expect(installer).to receive(:Updates=).with collection
+    expect(worker).to receive(:Updates=).with collection
+    allow(worker).to receive(:Updates).and_return collection
   end
 end
