@@ -59,6 +59,7 @@ registry_key 'HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate' do
     { type: :string, name:                'WUStatusServer', data:                           conf['wsus_server'] },
   ]
   notifies :restart, 'service[wuauserv]', :immediately
+  notifies :run, 'powershell_script[Force Windows update detection cycle]', :immediately
   recursive true
 end
 
@@ -89,13 +90,12 @@ registry_key 'HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate\AU' do
     { type:  :dword, name:                   'UseWUServer', data:                   conf['wsus_server'] ? 1 : 0 },
   ]
   notifies :restart, 'service[wuauserv]', :immediately
+  notifies :run, 'powershell_script[Force Windows update detection cycle]', :immediately
   recursive true
 end
 
 service 'wuauserv' do
-  supports status: true, start: true, stop: true, restart: true
-  action [:start, :enable]
-  notifies :run, 'powershell_script[Force Windows update detection cycle]', :immediately
+  action :enable
 end
 
 # Force detection in case the client-side update group changed
