@@ -2,6 +2,13 @@ Wsus-client CHANGELOG
 ==============
 This file is used to list changes made in each version of the wsus-client cookbook.
 
+2.0.0 (2017-10-17)
+------------------
+- [PR 35](https://github.com/criteo-cookbooks/wsus-client/pull/35) - **Breaking:** Changed attributes controlling the `wsus-client::update` recipe
+- [PR 34](https://github.com/criteo-cookbooks/wsus-client/pull/34) - Add progress tracking support to `wsus_client_update` actions
+- [PR 33](https://github.com/criteo-cookbooks/wsus-client/pull/33) - Rewrite `wsus_client_update` as a Custom resource
+- Configure travis to test using ruby `2.3.0`
+
 1.2.1 (2016-05-05)
 ------------------
 - Configure travis to test using ruby 2.1.0
