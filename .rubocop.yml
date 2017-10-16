@@ -1,0 +1,40 @@
+AllCops:
+  TargetRubyVersion: 2.3
+  AllowSymlinksInCacheRootDirectory: true
+
+Layout/AlignHash:
+  EnforcedColonStyle: table
+  EnforcedHashRocketStyle: key
+
+Layout/EndOfLine:
+  EnforcedStyle: lf
+
+Metrics/AbcSize:
+  Max: 60
+
+Metrics/BlockLength:
+  Max: 90
+
+Metrics/LineLength:
+  Max: 180 # we're not in the 80s anymore.
+
+Metrics/ModuleLength:
+  Max: 200
+
+Metrics/MethodLength:
+  Max: 40
+
+Style/FormatString:
+  EnforcedStyle: percent
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/StringLiterals:
+  ConsistentQuotesInMultiline: true
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/TrailingCommaInLiteral:
+  EnforcedStyleForMultiline: comma
