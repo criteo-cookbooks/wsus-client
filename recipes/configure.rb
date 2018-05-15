@@ -51,12 +51,12 @@ registry_key 'HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate' do
     # Authorizes Users to approve or disapprove updates.
     { type:  :dword, name:              'ElevateNonAdmins', data: conf['allow_user_to_install_updates'] ? 1 : 0 },
     # Defines the current computer update group.
-    { type: :string, name:                   'TargetGroup', data:                    conf['update_group'] } || '',
+    { type: :string, name:                   'TargetGroup', data:                    conf['update_group'] || '' },
     # Allows client-side update group targeting.
     { type:  :dword, name:            'TargetGroupEnabled', data:                  conf['update_group'] ? 1 : 0 },
     # Defines the WSUS Server url.
-    { type: :string, name:                      'WUServer', data:                           conf['wsus_server'] },
-    { type: :string, name:                'WUStatusServer', data:                           conf['wsus_server'] },
+    { type: :string, name:                      'WUServer', data:                     conf['wsus_server'] || '' },
+    { type: :string, name:                'WUStatusServer', data:                     conf['wsus_server'] || '' },
   ]
   notifies :restart, 'service[wuauserv]', :immediately
   notifies :run, 'powershell_script[Force Windows update detection cycle]', :immediately
