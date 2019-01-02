@@ -83,7 +83,7 @@ action_class do
       # Searches non installed updates
       search_result = session.CreateUpdateSearcher.Search 'IsInstalled=0'
       # Transforms to ruby array for future use
-      search_result.Updates.each { |update| updates << update }
+      search_result.Updates.each { |update| updates << update } unless search_result.nil?
     end
   end
 
