@@ -2,7 +2,11 @@ Wsus-client CHANGELOG
 ==============
 This file is used to list changes made in each version of the wsus-client cookbook.
 
-2.0.& (2019-01-10)
+2.0.2 (2019-01-10)
+------------------
+- [PR 37](https://github.com/criteo-cookbooks/wsus-client/pull/37) - Fix for always restarting when some config opts are empty
+
+2.0.1 (2019-01-10)
 ------------------
 - [PR 40](https://github.com/criteo-cookbooks/wsus-client/pull/40) - Retries twice wuauserv restart calls
 
