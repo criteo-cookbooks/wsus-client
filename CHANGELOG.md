@@ -2,6 +2,10 @@ Wsus-client CHANGELOG
 ==============
 This file is used to list changes made in each version of the wsus-client cookbook.
 
+2.0.& (2019-01-10)
+------------------
+- [PR 40](https://github.com/criteo-cookbooks/wsus-client/pull/40) - Retries twice wuauserv restart calls
+
 2.0.0 (2017-10-17)
 ------------------
 - [PR 35](https://github.com/criteo-cookbooks/wsus-client/pull/35) - **Breaking:** Changed attributes controlling the `wsus-client::update` recipe
