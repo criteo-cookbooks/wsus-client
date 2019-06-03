@@ -22,6 +22,13 @@ return unless platform?('windows')
 
 include_recipe 'wsus-client::configure'
 
+guard_file = ::File.join(::Chef::Config[:file_cache_path], 'wsus-updates.txt')
+
 wsus_client_update 'WSUS updates' do
   node['wsus_client']['update'].each { |property, value| send(property, value) }
+  not_if { ::File.exists?(guard_file) && ::File.read(guard_file) == node['wsus_client']['update_group'] }
+end
+
+file guard_file do
+  content node['wsus_client']['update_group']
 end

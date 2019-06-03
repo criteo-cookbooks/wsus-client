@@ -4,7 +4,7 @@ describe 'wsus-client::update' do
   describe 'On windows platform' do
     def chef_run(download_only = false)
       ChefSpec::SoloRunner.new(platform: 'windows', version: '2016') do |node|
-        node.set['wsus_client']['update']['action'] = download_only ? [:download] : [:download, :install]
+        node.normal['wsus_client']['update']['action'] = download_only ? [:download] : [:download, :install]
       end.converge(described_recipe)
     end
 
@@ -24,6 +24,10 @@ describe 'wsus-client::update' do
       run = chef_run(false)
       expect(run).to download_wsus_client_update(RESOURCE_NAME)
       expect(run).to install_wsus_client_update(RESOURCE_NAME)
+    end
+
+    it 'creates a guard file' do
+      expect(chef_run).to create_file(::File.join(::Chef::Config['file_cache_path'], 'wsus-updates.txt'))
     end
   end
 
