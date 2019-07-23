@@ -97,6 +97,7 @@ end
 service 'wuauserv' do
   action :enable
   retries 2
+  timeout node['wsus_client']['service_timeout']
 end
 
 # Force detection in case the client-side update group changed

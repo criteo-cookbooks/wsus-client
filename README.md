@@ -102,6 +102,7 @@ schedule_install_time        |Defines the time of day in 24-hour format to sched
 schedule_retry_wait          |Defines the time in minutes to wait at startup before applying update from a missed scheduled time      |FixNum (0-60)        |`0`
 reboot_warning               |Defines time in minutes of the restart warning countdown after reboot-required updates automatic install|FixNum (1-30)        |`5`
 reboot_prompt_timeout        |Defines time in minutes between prompts for a scheduled restart                                         |FixNum (1-1440)      |`10`
+service_timeout              |Defines time in seconds to wait before the service resource times out                                   |Integer              |`60`
 
 `*` automatic_update_behavior values are:
 
