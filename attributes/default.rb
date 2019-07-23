@@ -77,6 +77,9 @@ default['wsus_client']['reboot_warning']                           = 5
 # => 1-1440     = set prompts period to specified value
 default['wsus_client']['reboot_prompt_timeout']                    = 10
 
+# Defines time in seconds to wait before the service resource times out
+default['wsus_client']['service_timeout']                          = 60
+
 # Define action performed by the update recipe
 # This can be a combination of: nothing, download & install
 default['wsus_client']['update']['action']                        = %i[download install]
