@@ -2,6 +2,10 @@ Wsus-client CHANGELOG
 ==============
 This file is used to list changes made in each version of the wsus-client cookbook.
 
+2.0.3 (2019-07-23)
+------------------
+- [PR 44](https://github.com/criteo-cookbooks/wsus-client/pull/44) - Add timeout attribute for service resource
+
 2.0.2 (2019-01-10)
 ------------------
 - [PR 37](https://github.com/criteo-cookbooks/wsus-client/pull/37) - Fix for always restarting when some config opts are empty
