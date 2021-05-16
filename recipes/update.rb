@@ -1,6 +1,6 @@
 #
 # Author:: Baptiste Courtois (<b.courtois@criteo.com>)
-# Cookbook Name:: wsus-client
+# Cookbook:: wsus-client
 # Recipe:: update
 #
 # Copyright:: Copyright (c) 2014 Criteo.

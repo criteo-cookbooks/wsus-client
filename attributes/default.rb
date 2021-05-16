@@ -1,6 +1,6 @@
 #
 # Author:: Baptiste Courtois (<b.courtois@criteo.com>)
-# Cookbook Name:: wsus-client
+# Cookbook:: wsus-client
 # Attribute:: default
 #
 # Copyright:: Copyright (c) 2014 Criteo.
@@ -82,7 +82,7 @@ default['wsus_client']['service_timeout']                          = 60
 
 # Define action performed by the update recipe
 # This can be a combination of: nothing, download & install
-default['wsus_client']['update']['action']                        = %i[download install]
+default['wsus_client']['update']['action'] = %i(download install)
 # Time in seconds alloted to the download operation before failing.
 default['wsus_client']['update']['download_timeout']               = 3600
 # Time in seconds alloted to the install operation before failing.

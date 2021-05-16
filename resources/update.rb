@@ -1,6 +1,6 @@
 #
 # Author:: Baptiste Courtois (<b.courtois@criteo.com>)
-# Cookbook Name:: wsus-client
+# Cookbook:: wsus-client
 # Resource:: update
 #
 # Copyright:: Copyright (c) 2015 Criteo.
@@ -18,10 +18,10 @@
 # limitations under the License.
 #
 
-default_action %i[download install]
+default_action %i(download install)
 property :download_timeout, Integer, default: 3600
 property :install_timeout, Integer, default: 3600
-property :handle_reboot, [TrueClass, FalseClass], default: false
+property :handle_reboot, [true, false], default: false
 property :reboot_delay, Integer, default: 1
 
 action :download do
@@ -69,10 +69,6 @@ action :install do
 end
 
 action_class do
-  def whyrun_supported?
-    true
-  end
-
   def verify!(result)
     return if result.HResult.zero? && result.ResultCode == ::WsusClient::Job::ResultCode::SUCCEEDED
     raise "Operation failed. (Error code #{result.HResult} - Result code #{result.ResultCode})"

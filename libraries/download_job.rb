@@ -1,4 +1,4 @@
-require_relative 'job.rb'
+require_relative 'job'
 
 module WsusClient
   class DownloadJob < Job

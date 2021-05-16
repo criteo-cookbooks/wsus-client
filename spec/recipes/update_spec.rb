@@ -8,7 +8,7 @@ describe 'wsus-client::update' do
       end.converge(described_recipe)
     end
 
-    RESOURCE_NAME = 'WSUS updates'
+    RESOURCE_NAME = 'WSUS updates'.freeze
 
     it 'includes configure recipe' do
       expect(chef_run).to include_recipe('wsus-client::configure')
@@ -29,7 +29,7 @@ describe 'wsus-client::update' do
 
   describe 'On non-windows platform' do
     let(:chef_run) do
-      ChefSpec::SoloRunner.new(platform: 'centos', version: '7.4.1708').converge(described_recipe)
+      ChefSpec::SoloRunner.new(platform: 'centos', version: '7').converge(described_recipe)
     end
 
     it 'does nothing' do
