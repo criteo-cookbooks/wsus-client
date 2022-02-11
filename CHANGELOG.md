@@ -2,6 +2,10 @@ Wsus-client CHANGELOG
 ==============
 This file is used to list changes made in each version of the wsus-client cookbook.
 
+3.0.0 (2022-02-11)
+------------------
+Drop support for old Chef versions (< 13).
+
 2.0.3 (2019-07-23)
 ------------------
 - [PR 44](https://github.com/criteo-cookbooks/wsus-client/pull/44) - Add timeout attribute for service resource

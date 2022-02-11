@@ -3,7 +3,7 @@ maintainer       'Criteo'
 maintainer_email 'b.courtois@criteo.com'
 license          'Apache-2.0'
 description      'Configures wsus client'
-version          '2.0.3'
+version          '3.0.0'
 
 supports         'windows'
 
