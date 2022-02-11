@@ -1,0 +1,62 @@
+# This is a basic workflow to help you get started with Actions
+name: Criteo Cookbooks CI
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  rspec:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.5
+          bundler-cache: true
+      - run: bundle exec rubocop --version
+      - run: bundle exec rubocop
+      - run: bundle exec foodcritic --version
+      - run: bundle exec foodcritic . --exclude spec -f any
+      - run: bundle exec rspec
+  kitchen:
+    needs: [rspec]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        windows_version: ['windows-2012r2', 'windows-2016', 'windows-2019']
+    steps:
+      - uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{secrets.AWS_SSH_PRIVATE_KEY}}
+          known_hosts: unnecessary
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.5
+          bundler-cache: true
+      - run: bundle exec kitchen test ${{ matrix.windows_version }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SSH_KEY_ID: ${{ secrets.AWS_SSH_KEY_ID }}
+          AWS_SUBNET: ${{ secrets.AWS_SUBNET }}
+          AWS_SECURITY_GROUP: ${{ secrets.AWS_SECURITY_GROUP }}
+  supermarket:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [kitchen]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Publish to supermarket
+      uses: afaundez/chef-supermarket-action@8cdbe1cccbe1ecd8685b2ea8f48780135bae7cee
+      with:
+        user: criteo
+        cookbook: wsus-client
+        category: Package Management
+      env:
+        SUPERMARKET_API_KEY: ${{ secrets.SUPERMARKET_API_KEY }}
