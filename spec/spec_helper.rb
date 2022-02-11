@@ -24,11 +24,13 @@ def mock_ole_update_collection
     allow(::WIN32OLE).to receive(:new).with('Microsoft.Update.UpdateColl').and_return obj
   end
 end
+
 # Mocks IUpdateSearcher Search methods and its result
 def mock_search(searcher, available_updates = [])
   search_result = double('search_result', Updates: available_updates)
   expect(searcher).to receive(:Search).and_return search_result
 end
+
 # Mocks WU worker methods
 def mock_job(worker, action, download_result)
   update_result = double('update_result', ResultCode: 0)

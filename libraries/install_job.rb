@@ -1,6 +1,7 @@
-require_relative 'job.rb'
+require_relative 'job'
 
 module WsusClient
+  # Manage Update install job
   class InstallJob < Job
     def initialize(session)
       worker = session.CreateUpdateInstaller

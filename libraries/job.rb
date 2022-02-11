@@ -19,7 +19,8 @@ module WsusClient
     attr_reader :worker
 
     def initialize(worker)
-      raise TypeError, 'WsusClient::Job is an "abstract" class and must not be instanciated directly.' if self.class == ::WsusClient::Job
+      raise TypeError, 'WsusClient::Job is an "abstract" class and must not be instanciated directly.' if instance_of?(::WsusClient::Job)
+
       @worker = worker
     end
 
@@ -39,6 +40,7 @@ module WsusClient
       ::Timeout.timeout(timeout) do
         while progress?(job, updates_status, &block)
           break if job.IsCompleted
+
           ::Kernel.sleep 1
         end
       end
@@ -58,6 +60,7 @@ module WsusClient
       completion = progress.PercentComplete
       updates_status.each_with_index do |(update, status), index|
         next if status == ResultCode::SUCCEEDED
+
         case updates_status[update] = progress.GetUpdateResult(index).ResultCode
         when ResultCode::SUCCEEDED
           yield update, completion if block_given?

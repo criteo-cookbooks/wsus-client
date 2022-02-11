@@ -1,6 +1,7 @@
-require_relative 'job.rb'
+require_relative 'job'
 
 module WsusClient
+  # Manage Update download job
   class DownloadJob < Job
     def initialize(session)
       super session.CreateUpdateDownloader
