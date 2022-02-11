@@ -1,19 +1,26 @@
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.7
   AllowSymlinksInCacheRootDirectory: true
 
-Layout/AlignHash:
+Layout/HashAlignment:
   EnforcedColonStyle: table
   EnforcedHashRocketStyle: key
 
 Layout/EndOfLine:
   EnforcedStyle: lf
 
+Lint/ConstantDefinitionInBlock:
+  Exclude:
+  - spec/**/*_spec.rb
+
 Metrics/AbcSize:
   Max: 60
 
 Metrics/BlockLength:
   Max: 90
+
+Metrics/CyclomaticComplexity:
+  Max: 8
 
 Metrics/LineLength:
   Max: 180 # we're not in the 80s anymore.
@@ -34,7 +41,10 @@ Style/StringLiterals:
   ConsistentQuotesInMultiline: true
 
 Style/TrailingCommaInArguments:
-  EnforcedStyleForMultiline: consistent_comma
+  EnforcedStyleForMultiline: comma
 
-Style/TrailingCommaInLiteral:
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma
