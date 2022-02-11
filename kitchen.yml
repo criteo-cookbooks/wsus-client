@@ -1,0 +1,77 @@
+---
+# The following environment variables are required:
+# - AWS_ACCESS_KEY_ID
+# - AWS_SECRET_ACCESS_KEY
+# - AWS_SSH_KEY_ID
+# - AWS_REGION
+#
+# Optional environment variables:
+# - AWS_SECURITY_GROUP
+# - AWS_SUBNET
+# - KITCHEN_NO_CONCURRENCY set it to true if you do not want concurrency
+
+driver:
+  name: ec2
+  instance_type: t3a.large
+  associate_public_ip: true
+  iam_profile_name: test-kitchen
+  retryable_tries: 120
+  region: <%= ENV['AWS_REGION'] || 'us-west-2' %>
+  tags:
+    created-by: <%= ENV['AWS_SSH_KEY_ID'] %>
+  subnet_filter:
+    tag:   'Name'
+    value: <%= ENV['AWS_SUBNET'] || 'chef-testing-opensource-vpc-subnet' %>
+  security_group_filter:
+    tag:   'Name'
+    value: <%= ENV['AWS_SECURITY_GROUP'] || 'chef-testing-opensource-vpc-security-group' %>
+  block_device_mappings:
+    - device_name: /dev/sda1
+      ebs:
+        volume_type: gp2
+        delete_on_termination: true
+
+provisioner:
+  name: chef_zero
+  install_strategy: always
+  chef_license: accept
+  client_rb:
+    ssl_verify_mode: :verify_none
+    verify_api_cert: false
+    exit_status: ":enabled"
+    client_fork: false
+    enforce_path_sanity: true
+    file_cache_path: c:/temp
+  retry_on_exit_code:
+  - 35
+  max_retries: 2
+  wait_for_retry: 60
+  product_name: chef
+
+transport:
+  name: winrm
+  elevated: true
+  elevated_username: System
+  elevated_password: null
+  ssh_key: ~/.ssh/id_rsa # needed to fetch admin password even when using winrm
+
+platforms:
+  - name: windows-2012r2
+    driver:
+      image_search:
+        'owner-id': 801119661308
+        name: 'Windows_Server-2012-R2-English-STIG-Full-20*'
+  - name: windows-2016
+    driver:
+      image_search:
+        'owner-id': 801119661308
+        name: 'Windows_Server-2016-English-Full-Base-20*'
+  - name: windows-2019
+    driver:
+      image_search:
+        'owner-id': 801119661308
+        name: 'Windows_Server-2019-English-Full-Base-20*'
+suites:
+  - name: wsus-client
+    run_list:
+      - recipe[wsus-client]
