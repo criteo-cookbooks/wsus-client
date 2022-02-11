@@ -29,6 +29,7 @@ action :download do
 
   ::Chef::Log.info "Windows Auto Update: #{updates_to_download.size} update(s) to download."
   next if updates_to_download.empty?
+
   converge_by "downloading #{updates_to_download.count} update(s)" do
     # Performs download
     result = ::WsusClient::DownloadJob.new(session).run(updates_to_download, new_resource.download_timeout) do |update, progress|
@@ -44,6 +45,7 @@ action :install do
 
   ::Chef::Log.info "Windows Auto Update: #{downloaded_updates.size} update(s) to install."
   next if downloaded_updates.empty?
+
   converge_by "installing #{downloaded_updates.count} update(s)" do
     # Accepts EULA when required
     downloaded_updates.reject(&:EulaAccepted).each do |update|
@@ -75,6 +77,7 @@ action_class do
 
   def verify!(result)
     return if result.HResult.zero? && result.ResultCode == ::WsusClient::Job::ResultCode::SUCCEEDED
+
     raise "Operation failed. (Error code #{result.HResult} - Result code #{result.ResultCode})"
   end
 

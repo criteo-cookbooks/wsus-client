@@ -6,10 +6,10 @@ describe 'wsus-client::configure' do
       ChefSpec::SoloRunner.new(platform: 'windows', version: '2016').converge(described_recipe)
     end
 
-    WINDOWS_UPDATE_KEY = 'HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate'
-    WINDOWS_AUTO_UPDATE_KEY = 'HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate\AU'
-    WUAUSERV_SERVICE_NAME = 'wuauserv'
-    DETECTION_EXECUTE_NAME = 'Force Windows update detection cycle'
+    WINDOWS_UPDATE_KEY = 'HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate'.freeze
+    WINDOWS_AUTO_UPDATE_KEY = 'HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate\AU'.freeze
+    WUAUSERV_SERVICE_NAME = 'wuauserv'.freeze
+    DETECTION_EXECUTE_NAME = 'Force Windows update detection cycle'.freeze
 
     it 'configures windows update and restart wuauserv' do
       key = WINDOWS_UPDATE_KEY
