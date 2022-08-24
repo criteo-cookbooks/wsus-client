@@ -37,6 +37,8 @@ default['wsus_client']['allow_user_to_install_updates']            = false
 default['wsus_client']['auto_install_minor_updates']               = false
 # Disables automatic reboot with logged-on users.
 default['wsus_client']['no_reboot_with_logged_users']              = true
+# Clean and retry on SoftwareDistribution corruption
+default['wsus_client']['retry_on_corruption']                      = false
 
 # Defines auto update behavior.
 # => :disabled  = Disables automatic updates

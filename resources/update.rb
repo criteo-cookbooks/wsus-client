@@ -53,8 +53,40 @@ action :install do
     end
 
     # Performs install
-    result = ::WsusClient::InstallJob.new(session).run(downloaded_updates, new_resource.install_timeout) do |update, progress|
-      ::Chef::Log.info "Update '#{update.Title}' installed (#{progress}% done)"
+    # In case of error, clean cache and retry
+    attempt = false
+    begin
+      result = ::WsusClient::InstallJob.new(session).run(downloaded_updates, new_resource.install_timeout) do |update, progress|
+        ::Chef::Log.info "Update '#{update.Title}' installed (#{progress}% done)"
+      end
+    rescue WIN32OLERuntimeError => e
+      if !attempt && node.read('wsus_client', 'retry_on_corruption')
+        ::Chef::Log.warn "Failed clean cache and retry : #{e.message}"
+
+        %w[wuauserv bits].each do |srv|
+          service srv do
+            action :stop
+          end
+        end
+
+        directory 'C:\\Windows\\SoftwareDistribution' do
+          action :delete
+        end
+
+        %w[bits wuauserv].each do |srv|
+          service srv do
+            action :start
+          end
+        end
+
+        action_download
+
+        attempt = true
+        retry
+      end
+
+      ::Chef::Log.error "Ressource failed after retry : #{e.message}"
+      raise
     end
 
     # Reboot if allowed and needed
