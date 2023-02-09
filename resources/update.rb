@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+unified_mode true
 default_action %i[download install]
 property :download_timeout, Integer, default: 3600
 property :install_timeout, Integer, default: 3600
